@@ -15,6 +15,17 @@ mongoose
 app.use(express.json());
 app.use("/", mainRouter);
 
+app.use((req, res) => {
+  res.status(404).send({ message: "Requested resource not found" });
+});
+
+app.use((req, res, next) => {
+  req.user = {
+    _id: "680e5dd3ce4242c2d05c7bb9", // paste the _id of the test user created in the previous step
+  };
+  next();
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

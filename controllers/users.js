@@ -11,39 +11,32 @@ const getUsers = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
-  User.create({ name, avatar }).then((user) =>
-    res
-      .status(201)
-      .send(user)
-      .catch((err) => {
-        console.error(err);
-        if (err.name === "ValidationError") {
-          return res.status(400).send({ message: err.message });
-        }
-        return res.status(500).send({ message: err.message });
-      })
-  );
+  User.create({ name, avatar })
+    .then((user) => res.status(201).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res.status(400).send({ message: err.message });
+      }
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 const getUserById = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
-    .then((user) =>
-      res
-        .status(200)
-        .send(user)
-        .catch((err) => {
-          console.error(err);
-          if (err.name === "DocumentNotFoundError") {
-            // need to complete
-          } else if (err.name === "CastError") {
-            //need to finsih this part
-          }
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(404).send({ message: "User not found" });
+      } else if (err.name === "CastError") {
+        return res.status(400).send({ message: "Invalid user ID format" });
+      }
 
-          return res.status(500).send({ message: err.message });
-        })
-    );
+      return res.status(500).send({ message: err.message });
+    });
 };
 
 module.exports = { getUsers, createUser, getUserById };
