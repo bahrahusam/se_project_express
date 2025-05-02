@@ -1,4 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  DEFAULT,
+
+} = require("../utils/constants");
 
 // GET /items — returns all clothing items
 const getItems = (req, res) => {
@@ -6,7 +12,7 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT).send("An error has occurred on the server");
     });
 };
 
@@ -21,9 +27,11 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST)
+          .send("An error has occurred on the server");
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT).send("An error has occurred on the server");
     });
 };
 
@@ -37,11 +45,15 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
-      } else if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID format" });
+        return res
+          .status(NOT_FOUND)
+          .send("An error has occurred on the server");
+      } if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST)
+          .send("An error has occurred on the server");
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT).send("An error has occurred on the server");
     });
 };
 
@@ -56,12 +68,12 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid item ID" });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT).send({ message: err.message });
     });
 };
 
@@ -76,12 +88,16 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND)
+          .send("An error has occurred on the server");
       }
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(BAD_REQUEST)
+          .send("An error has occurred on the server");
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(DEFAULT).send("An error has occurred on the server");
     });
 };
 
