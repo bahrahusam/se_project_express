@@ -1,10 +1,5 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  DEFAULT,
-
-} = require("../utils/constants");
+const { BAD_REQUEST, NOT_FOUND, DEFAULT } = require("../utils/constants");
 
 // GET /items — returns all clothing items
 const getItems = (req, res) => {
@@ -12,7 +7,9 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -29,9 +26,11 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -47,13 +46,16 @@ const deleteItem = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND)
-          .send("An error has occurred on the server");
-      } if (err.name === "CastError") {
+          .send({ message: "An error has occurred on the server" });
+      }
+      if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -90,14 +92,16 @@ const dislikeItem = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

@@ -6,7 +6,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -19,9 +21,11 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -35,15 +39,17 @@ const getUserById = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         return res
           .status(NOT_FOUND)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
-          .send("An error has occurred on the server");
+          .send({ message: "An error has occurred on the server" });
       }
 
-      return res.status(DEFAULT).send("An error has occurred on the server");
+      return res
+        .status(DEFAULT)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
