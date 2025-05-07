@@ -1,5 +1,14 @@
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
+const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const { BAD_REQUEST, NOT_FOUND, DEFAULT } = require("../utils/constants");
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  DEFAULT,
+  UNAUTHORIZED,
+  CONFLICT,
+} = require("../utils/constants");
 
 const getUsers = (req, res) => {
   User.find({})
@@ -12,21 +21,57 @@ const getUsers = (req, res) => {
     });
 };
 
-const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "An error has occurred on the server" });
-      }
-      return res
-        .status(DEFAULT)
-        .send({ message: "An error has occurred on the server" });
+const createUser = async (req, res) => {
+  try {
+    const { name, avatar, email, password } = req.body;
+
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      avatar,
+      email,
+      password: hashedPassword,
     });
+
+    // Return user without password
+    const userResponse = user.toObject();
+    delete userResponse.password;
+
+    res.status(201).send(userResponse);
+  } catch (err) {
+    console.error(err);
+    if (err.code === 11000) {
+      return res.status(CONFLICT).send({ message: "Email already exists" });
+    }
+    if (err.name === "ValidationError") {
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "Invalid data for creating user" });
+    }
+    return res
+      .status(DEFAULT)
+      .send({ message: "An error has occurred on the server" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findUserByCredentials(email, password);
+
+    if (!user) {
+      return res
+        .status(UNAUTHORIZED)
+        .json({ error: "Invalid email or password" });
+    }
+
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    res.json({ token });
+  } catch (error) {
+    res.status(DEFAULT).json({ error: "Server error" });
+  }
 };
 
 const getCurrentUser = (req, res) => {
@@ -82,4 +127,4 @@ const updateUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, updateUser };
+module.exports = { getUsers, createUser, getCurrentUser, updateUser, login };
