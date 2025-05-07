@@ -4,10 +4,14 @@ const router = require("express").Router();
 const userRouter = require("./users");
 const clothingItemsRouter = require("./clothingItems");
 const { loginUser, createUser } = require("../controllers/users");
+const auth = require("../middlewares/auth");
+
+router.use("/items", clothingItemsRouter);
+router.post("/signin", loginUser);
+router.post("/signup", createUser);
+
+router.use(auth);
 
 router.use("/users", userRouter);
-router.use("/items", clothingItemsRouter);
-app.post('/signin', loginUser);
-app.post('/signup', createUser);
 
 module.exports = router;
