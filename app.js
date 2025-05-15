@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const mainRouter = require("./routes/index");
 const cors = require("cors");
+const mainRouter = require("./routes/index");
 const { NOT_FOUND } = require("./utils/constants");
 
 const app = express();
