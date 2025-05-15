@@ -28,7 +28,7 @@ const createUser = async (req, res) => {
     const userResponse = user.toObject();
     delete userResponse.password;
 
-    res.status(201).send(userResponse);
+    return res.status(201).send(userResponse);
   } catch (err) {
     console.error(err);
     if (err.code === 11000) {
@@ -64,7 +64,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    res.json({ token });
+    return res.json({ token });
   } catch (err) {
     console.error(err);
     // Check for incorrect email or password error
@@ -118,7 +118,7 @@ const updateUser = (req, res) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
-      res.status(200).send(user);
+      return res.status(200).send(user);
     })
     .catch((err) => {
       console.error(err);

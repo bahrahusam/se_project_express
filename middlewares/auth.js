@@ -23,7 +23,7 @@ const auth = (req, res, next) => {
     req.user = payload;
 
     // Call the next middleware/route handler
-    next();
+    return next();
   } catch (err) {
     // If the token verification fails, return 401
     return res.status(UNAUTHORIZED).send({ message: "Unauthorized" });
