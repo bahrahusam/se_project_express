@@ -7,6 +7,8 @@ const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const { errors } = require("celebrate");
 
+require("dotenv").config();
+
 const app = express();
 const { PORT = 3001 } = process.env;
 
