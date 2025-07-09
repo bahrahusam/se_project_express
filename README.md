@@ -11,3 +11,10 @@ The back-end project is focused on creating a server for the WTWR application. T
 ### Testing
 
 Before committing your code, make sure you edit the file `sprint.txt` in the root folder. The file `sprint.txt` should contain the number of the sprint you're currently working on. For ex. 12
+
+## Domain links to the project
+
+    husamwtwr.crabdance.com
+
+www.husamwtwr.crabdance.com
+api.husamwtwr.crabdance.com
