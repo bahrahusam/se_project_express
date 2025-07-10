@@ -3,12 +3,10 @@ const bcrypt = require("bcrypt");
 const { JWT_SECRET } = require("../utils/config");
 const User = require("../models/user");
 
-const {
-  BadRequestError,
-  UnauthorizedError,
-  NotFoundError,
-  ConflictError,
-} = require("../utils/errors");
+const BadRequestError = require("../utils/BadRequestError");
+const UnauthorizedError = require("../utils/UnauthorizedError");
+const NotFoundError = require("../utils/NotFoundError");
+const ConflictError = require("../utils/ConflictError");
 
 const createUser = async (req, res, next) => {
   try {
