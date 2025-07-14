@@ -26,13 +26,14 @@ const createUser = async (req, res, next) => {
     return res.status(201).send(userResponse);
   } catch (err) {
     if (err.code === 11000) {
-      // Email duplicate key error
-      next(new ConflictError("Email already exists"));
-    } else if (err.name === "ValidationError") {
-      next(new BadRequestError("Invalid data for creating user"));
-    } else {
-      next(err); // Pass other errors to centralized error handler
+      return next(new ConflictError("Email already exists"));
     }
+
+    if (err.name === "ValidationError") {
+      return next(new BadRequestError("Invalid data for creating user"));
+    }
+
+    return next(err);
   }
 };
 
@@ -46,7 +47,7 @@ const login = async (req, res, next) => {
 
     const user = await User.findUserByCredentials(email, password);
 
-    // If no user found, findUserByCredentials should throw, but just in case:
+    // Normally this should never happen, but we check defensively.
     if (!user) {
       throw new UnauthorizedError("Invalid email or password");
     }
@@ -54,14 +55,15 @@ const login = async (req, res, next) => {
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
     return res.json({ token });
   } catch (err) {
-    // If error message indicates bad credentials, map to UnauthorizedError
     if (err.message === "Incorrect email or password") {
-      next(new UnauthorizedError("Invalid email or password"));
-    } else if (err instanceof BadRequestError) {
-      next(err);
-    } else {
-      next(err);
+      return next(new UnauthorizedError("Invalid email or password"));
     }
+
+    if (err instanceof BadRequestError) {
+      return next(err);
+    }
+
+    return next(err); // Catch-all
   }
 };
 

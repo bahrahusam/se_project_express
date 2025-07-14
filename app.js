@@ -5,10 +5,10 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
-const { NOT_FOUND } = require("./utils/constants");
+
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
-const { NotFoundError } = require("./utils/errors");
+const NotFoundError = require("./utils/NotFoundError");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -24,6 +24,12 @@ app.use(express.json());
 app.use(cors());
 
 app.use(requestLogger);
+
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("The server will crash now!");
+  }, 0);
+});
 
 // Main router
 app.use("/", mainRouter);
